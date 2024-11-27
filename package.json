@@ -1,0 +1,22 @@
+{
+  "name": "test-docs",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "src/app.ts",
+  "license": "MIT",
+  "scripts": {
+    "start:regex": "npx tsx src/app.ts regex",
+    "start:template": "npx tsx src/app.ts template"
+  },
+  "dependencies": {
+    "docx-templates": "^4.13.0",
+    "jszip": "^3.10.1",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/jszip": "^3.4.1",
+    "@types/node": "^22.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
