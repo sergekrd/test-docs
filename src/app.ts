@@ -8,11 +8,11 @@ const template = {
     Boss: 'А. Б. Петров',
     Company: 'ММММ ДДД ЦЦЦЦ',
     RegNomer: '007777777777',
-    FullName: 'ФАРИДА АЛИЯ ОТКУРМАТОВНА АЛИЕВААААААААAAAAA',
+    FullName: 'ФАРИДА АЛИЯ ОТКУРМАТОВНА АЛИЕВА',
     DataSertNow: '02 ноября 2024 года',
     Level: 'РАЗРЕШЕНИЯ НА РАБОТУ ИЛИ ОТДЫХ',
     DataSerTo: '02 ноября 2027 года',
-    FullNameLat: 'FARIDA ALIYA OTKURMATOVNA ALIEVAAAAAAAAAAA',
+    FullNameLat: 'FARIDA ALIYA OTKURMATOVNA ALIEVA',
     PlaceCity: 'город Москва',
     Jobs: 'ВЕДУЩИЙ СПЕЦИАЛИСТ'
 }
@@ -40,16 +40,47 @@ async function main() {
 
     try {
         const handler = getHandler(handlerType);
+        if (handlerType === 'scan') {
+            const inputDir = path.resolve(__dirname, `../../../../../../serge/Yandex.Disk.localized/Загрузки/OCR_valid/`)
+            const jsonOutputPath = path.resolve(__dirname, 'result.json');
+            const results: { [key: string]: { error?: string; bsoNumber: string; regNumberRu: string; regNumberEng: string } } = {};
+            const files = fs.readdirSync(inputDir);
+            let i = 1;
+            for (const file of files) {
+                let toTest = ''
+                toTest = "6734577_image_t0000009347_n1.jpg"
+                const inputFilePath = path.resolve(inputDir, toTest ? toTest : file);
+                const binaryFile = fs.readFileSync(inputFilePath);
+
+                console.log(`Processing ${i} of ${files.length} document: ${file} with handler: ${handlerType}...`);
+                const handler = new ScanCertHandler()
+                const scanResults = await handler.handle(binaryFile);
+                results[file] = {
+                    ...(scanResults.regNumberRu !== scanResults.regNumberEng
+                        || !scanResults.bsoNumber
+                        || !scanResults.regNumberRu
+                        || !scanResults.regNumberEng) ? { error: "+" } : {},
+                    bsoNumber: scanResults.bsoNumber,
+                    regNumberRu: scanResults.regNumberRu,
+                    regNumberEng: scanResults.regNumberEng,
+                }
+                i += 1;
+                fs.writeFileSync(jsonOutputPath, JSON.stringify(results, null, 2));
+                console.log(`Results saved to: ${jsonOutputPath}`);
+            }
+
+            return
+        }
         const inputFile = handlerType === 'regex' ? 'Маска (2)' : 'mask_template'
         // Чтение входного файла
-        const inputDocPath = path.resolve(__dirname, `./input/${inputFile}.docx`);
-        const outputPath = path.resolve(__dirname, `./output/${handlerType}/output.docx`);
-const inputPath = handlerType==="scan"? path.resolve(__dirname, `../../../../../../serge/Yandex.Disk.localized/Загрузки/OCR_valid/6701429_image_t0000002375_n1.jpg`):inputDocPath;
+        const inputDocPath = path.resolve(__dirname, `./generate/input/${inputFile}.docx`);
+        const outputPath = path.resolve(__dirname, `./generate/output/${handlerType}/output.docx`);
+        const inputPath = handlerType === "scan" ? path.resolve(__dirname, `../../../../../../serge/Yandex.Disk.localized/Загрузки/OCR_valid/6701429_image_t0000002375_n1.jpg`) : inputDocPath;
         const binaryFile = fs.readFileSync(inputPath);
 
         console.log(`Processing the document with handler: ${handlerType}...`);
-        
-        const updatedDocx = await handler.handle(binaryFile, template);
+
+        const updatedDocx = await handler.handle(binaryFile, template) as Buffer;
 
         // Сохранение обновленного файла
         fs.writeFileSync(outputPath, updatedDocx);
