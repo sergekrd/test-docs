@@ -6,11 +6,13 @@
   "license": "MIT",
   "scripts": {
     "start:regex": "npx tsx src/app.ts regex",
-    "start:template": "npx tsx src/app.ts template"
+    "start:template": "npx tsx src/app.ts template",
+        "start:scan": "npx tsx src/app.ts scan"
   },
   "dependencies": {
     "docx-templates": "^4.13.0",
     "jszip": "^3.10.1",
+    "tesseract.js": "^5.1.1",
     "tsx": "^4.19.2"
   },
   "devDependencies": {
