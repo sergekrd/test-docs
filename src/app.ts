@@ -63,7 +63,7 @@ async function main() {
                 const startTime = Date.now();
                 const collectResults = await handler.handle(cropped, {
                     regNumber: { prefix: '002', length: 12 },
-                    bsoNumber: { prefix: '', length: 13 }
+                    bsoNumber: { prefix: '01424', length: 13 }
                 });
                 const endTime = Date.now();
                 const executionTime = endTime - startTime;
@@ -76,7 +76,7 @@ async function main() {
                     cropped = await drawImage(cropped,  collectResults?.regNumber?.searchRect)
                 }
                 if (collectResults?.regNumber?.textBox) {
-                    cropped = await drawImage(cropped, file, { ...collectResults?.regNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
+                    cropped = await drawImage(cropped, { ...collectResults?.regNumber?.textBox, color: { r: 0, g: 255, b: 255, alpha: 0.5 } })
                 }
                 if (collectResults?.bsoNumber?.searchRect) {
                     cropped = await drawImage(cropped,  { ...collectResults?.bsoNumber?.searchRect, color: { r: 255, g: 0, b: 0, alpha: 0.5 } })
