@@ -73,17 +73,18 @@ async function main() {
                     executionTime,
                 };
                 if (collectResults?.regNumber?.searchRect) {
-                    cropped = await drawImage(cropped, file, collectResults?.regNumber?.searchRect)
+                    cropped = await drawImage(cropped,  collectResults?.regNumber?.searchRect)
                 }
                 if (collectResults?.regNumber?.textBox) {
                     cropped = await drawImage(cropped, file, { ...collectResults?.regNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
                 }
                 if (collectResults?.bsoNumber?.searchRect) {
-                    cropped = await drawImage(cropped, file, { ...collectResults?.bsoNumber?.searchRect, color: { r: 255, g: 0, b: 0, alpha: 0.5 } })
+                    cropped = await drawImage(cropped,  { ...collectResults?.bsoNumber?.searchRect, color: { r: 255, g: 0, b: 0, alpha: 0.5 } })
                 }
                 if (collectResults?.bsoNumber?.textBox) {
-                    cropped = await drawImage(cropped, file, { ...collectResults?.bsoNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
+                    cropped = await drawImage(cropped,  { ...collectResults?.bsoNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
                 }
+                await sharp(cropped).toFile(`./processed_images/${file}`)
                 i += 1;
                 fs.writeFileSync(jsonOutputPath, JSON.stringify(results, null, 2));
             }
@@ -136,7 +137,6 @@ async function main() {
                 right: borderOptions.right,
                 background: borderOptions.background
             })
-        await newSharpObject.toFile(`./processed_images/${filename}`);
         return newSharpObject.toBuffer();
     }
 
@@ -150,7 +150,6 @@ async function main() {
      */
     async function drawImage(
         binaryInput: Buffer,
-        filename: string,
         rect: { left: number; top: number; width: number; height: number; color?: { r: number; g: number; b: number; alpha: number } }
     ): Promise<Buffer> {
         // Устанавливаем цвет по умолчанию, если он не указан
@@ -170,11 +169,9 @@ async function main() {
         );
 
         // Обработка изображения
-        const outputPath = `./processed_images/${filename}`;
         const resultBuffer = await sharp(binaryInput)
-            .composite([{ input: rectangle, blend: 'over' }]) // Добавляем прямоугольник
-            .toFile(outputPath) // Сохраняем в файл
-            .then(() => sharp(outputPath).toBuffer()); // Возвращаем буфер изображения
+            .composite([{ input: rectangle, blend: 'over' }])
+            .toBuffer() // Добавляем прямоугольник
 
         return resultBuffer;
     }
