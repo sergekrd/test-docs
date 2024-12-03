@@ -68,7 +68,8 @@ async function main() {
                 const endTime = Date.now();
                 const executionTime = endTime - startTime;
                 results[file] = {
-                    ...(collectResults) ? { ...collectResults } : { error: "empty result" },
+                    ...(collectResults?.bsoNumber || collectResults?.regNumber)
+                        ? { ...collectResults } : { error: "empty result" },
                     executionTime,
                 };
                 if (collectResults?.regNumber?.searchRect) {
@@ -76,6 +77,12 @@ async function main() {
                 }
                 if (collectResults?.regNumber?.textBox) {
                     cropped = await drawImage(cropped, file, { ...collectResults?.regNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
+                }
+                if (collectResults?.bsoNumber?.searchRect) {
+                    cropped = await drawImage(cropped, file, { ...collectResults?.bsoNumber?.searchRect, color: { r: 255, g: 0, b: 0, alpha: 0.5 } })
+                }
+                if (collectResults?.bsoNumber?.textBox) {
+                    cropped = await drawImage(cropped, file, { ...collectResults?.bsoNumber?.textBox, color: { r: 0, g: 255, b: 0, alpha: 0.5 } })
                 }
                 i += 1;
                 fs.writeFileSync(jsonOutputPath, JSON.stringify(results, null, 2));

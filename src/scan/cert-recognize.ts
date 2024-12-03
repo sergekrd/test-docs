@@ -32,7 +32,7 @@ export class RecognizeCertHandler {
 
     private readonly rectangles = {
         regNoRect: { left: 750, top: 650, width: 400, height: 80 },
-        bsoNoRect: { left: 250, top: 400, width: 700, height: 150 },
+        bsoNoRect: { left: 400, top: 400, width: 500, height: 100 },
     };
 
     /**
@@ -48,7 +48,7 @@ export class RecognizeCertHandler {
         try {
             const worker = await this.createTesseractWorker("eng", this.numbersWhitelist);
             const regNumber = await this.scanNumberByRect(worker, imageBuffer, rules.regNumber, this.rectangles.regNoRect);
-            //   const bsoNumber = await this.scanNumberByRect(worker, imageBuffer, rules.bsoNumber,this.rectangles.regNoRect);
+            const bsoNumber = await this.scanNumberByRect(worker, imageBuffer, rules.bsoNumber, this.rectangles.bsoNoRect);
             await worker.terminate();
 
             if (!regNumber) {
@@ -56,7 +56,8 @@ export class RecognizeCertHandler {
             }
             return {
                 //  bsoNumber?: regNumber,
-                regNumber: regNumber || undefined
+                regNumber: regNumber || undefined,
+                bsoNumber: bsoNumber || undefined
             };
         } catch (error) {
             console.error("Ошибка при распознавании текста:", error);
