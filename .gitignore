@@ -1,4 +1,4 @@
 /**/node_modules/
-/**/processed_images/
-/**/result_stat/
+/**/processed_images/**
+/**/result_stat/**
 .DS_Store

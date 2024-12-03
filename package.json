@@ -8,7 +8,7 @@
     "start:regex": "npx tsx src/app.ts regex",
     "start:template": "npx tsx src/app.ts template",
     "start:scan": "npx tsx src/app.ts scan",
-     "start:collectScan": "npx tsx src/app.ts collectScan"
+    "start:collectScan": "npx tsx src/app.ts collectScan"
   },
   "dependencies": {
     "docx-templates": "^4.13.0",
